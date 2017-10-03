@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello, Blockstack!</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!--<link rel="stylesheet" href="app.css" />-->
+</head>
+<body>
+  <div class="site-wrapper">
+    <div class="site-wrapper-inner">
+      <div class="panel-landing" id="section-1">
+        <img src="static/img/speakerphone.png" />
+        <h1 class="landing-heading">Speakerphone.IO</h1>
+          <p>Welcome to the decentralized audio protocol</p>
+        <p class="lead">
+          <button class="btn btn-primary btn-lg" id="signin-button">
+            Sign In
+          </button>
+          <button class="btn btn-primary btn-lg" onclick="areYouSure()">Sign Out</button>
+        </p>
+      </div>
+      <div class="panel-welcome" id="section-2">
+        <div class="avatar-section">
+                <section data-content="file">
+          <h4>File</h4>
+          <span class="btn btn-info btn-file">
+          Browse <input type="file" id="file" accept="audio/*"/>
+          </span>
+      </section>
+
+      <section data-content="preview">
+          <h4>File Preview</h4>
+          <div id="waveform"></div>
+          <button id="backward-button" class="btn btn-primary">
+            <i class="glyphicon glyphicon-backward"></i>
+          </button>
+          <button id="stop-button" class="btn btn-primary">
+            <i class="glyphicon glyphicon-stop"></i>
+          </button>
+          <button id="play-button" class="btn btn-primary">
+            <i class="glyphicon glyphicon-play"></i>
+          </button>
+          <button id="pause-button" class="btn btn-primary">
+            <i class="glyphicon glyphicon-pause"></i>
+          </button>
+          <button id="forward-button" class="btn btn-primary">
+            <i class="glyphicon glyphicon-forward"></i>
+          <button class="btn btn-primary" onclick="storeFile()" />Store File</button>
+      </section><br />
+      <button class="btn btn-primary" onclick="loadAudio()">Load from Storage</button>
+        <div class="#waveform"></div>
+        <button id="load-play-button" class="btn btn-primary">
+          <i class="glyphicon glyphicon-play">
+            PLAY</i></button>
+        <button id="load-pause-button" class="btn btn-primary">
+          <i class="glyphicon glyphicon-pause">
+          PAUSE</i></button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="bundle.js"></script>
+  <script src="app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
+  <script>
+    let areYouSure = () => {
+      if (confirm("Are you sure you want to log out?")) {
+        blockstack.signUserOut(window.location.href)
+      }
+    }
+
+    function storeFile() {
+      blockstack.putFile(STORAGE_FILE, JSON.stringify(fileArray))
+    }
+
+    function loadAudio() {
+      blockstack.getFile(STORAGE_FILE).then((audio) => {
+        var data = JSON.parse(audio || '[]');
+        data.forEach(function (file, index) {
+          file.id = index;
+          file.filename = file.name;
+          file.filetype = file.type;
+          file.fileblob = file.fileblob;
+          file.soundfile = file.soundfile;
+          var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#588efb',
+          });
+          wavesurfer.load(file.fileblob);
+              // Play button event listener
+          wavesurfer.on('ready', function (event) {
+            document.getElementById('load-play-button').addEventListener('click', function () {
+              wavesurfer.play();
+            });
+          });
+          wavesurfer.on('ready', function (event) {
+            document.getElementById('load-pause-button').addEventListener('click', function () {
+              wavesurfer.pause();
+            });
+          }); 
+        });       
+      });
+    }
+  </script>
+</body>
+</html>
