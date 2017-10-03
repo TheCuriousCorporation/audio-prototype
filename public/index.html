@@ -88,6 +88,7 @@
             waveColor: '#588efb',
           });
           wavesurfer.load(file.fileblob);
+          console.log(file.fileblob);
               // Play button event listener
           wavesurfer.on('ready', function (event) {
             document.getElementById('load-play-button').addEventListener('click', function () {
