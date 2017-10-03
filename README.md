@@ -1,3 +1,3 @@
 # audio-prototype
 
-Made with Node.Js, Vanilla Javascript, WaveSurfer.js, and Blockstack.js
+DOES NOT WORK AT ALL. DO NOT USE!
